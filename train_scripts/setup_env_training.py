@@ -8,7 +8,7 @@ Usage:
 import modal
 from pathlib import Path
 
-URL_TRAIN_SCR = ""
+URL_TRAIN_SCR = "https://raw.githubusercontent.com/Aquiles-ai/Kairos/refs/heads/main/train_scripts/train_sft.py" # Or https://raw.githubusercontent.com/Aquiles-ai/Kairos/refs/heads/main/train_scripts/train_projector.py
 MODEL = "Aquiles-ai/Kairos-Proj-80k" # or Aquiles-ai/Kairos-Initialized
 DW_MODEL = True
 
