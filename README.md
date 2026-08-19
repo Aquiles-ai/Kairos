@@ -1,4 +1,10 @@
+<div align="center">
+
 # Kairos
+
+<img src="https://res.cloudinary.com/dmtomxyvm/image/upload/v1786241401/kairos_cover_qshixn.png" width="800"/>
+
+</div>
 
 **Experimental research** on building a small multimodal model from scratch: a frozen vision tower ([Aquiles-ai/MoonViT-3D](https://huggingface.co/Aquiles-ai/MoonViT-3D), extracted from [moonshotai/Kimi-K2.6](https://huggingface.co/moonshotai/Kimi-K2.6)) + a Kimi-style 2-layer MLP projector + [LiquidAI/LFM2.5-2.6B](https://huggingface.co/LiquidAI/LFM2.5-2.6B) as the LLM. Image ↔ text only (no video).
 
