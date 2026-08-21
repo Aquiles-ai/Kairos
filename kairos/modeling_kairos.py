@@ -49,6 +49,7 @@ class KairosMultimodalProjection(nn.Module):
         # config.projector_output_scale right after from_pretrained, because
         # assigning the config attr alone afterwards is a silent no-op.
         self.output_scale = getattr(config, "projector_output_scale", None)
+        self.eps = 1e-6
 
     def forward(self, hidden_states: torch.Tensor):
         batch_size = hidden_states.shape[0]
@@ -57,8 +58,15 @@ class KairosMultimodalProjection(nn.Module):
         hidden_states = self.act(hidden_states)
         hidden_states = self.out_proj(hidden_states)
         if self.output_scale is not None:
-            # eps guards the zero-init row (0/0) — normalize(0) stays 0
-            hidden_states = F.normalize(hidden_states, dim=-1, eps=1e-6) * self.output_scale
+            # Hard cap on token norm, not a forced re-normalization: scale=1
+            # (no-op) when norm <= output_scale, scale<1 only to pull down
+            # tokens that exceed it. eps avoids 0/0 on the zero-init row; the
+            # clamp saturates there too (output_scale/eps >> 1), so grad through
+            # norm is zero on that row and backprop is a clean passthrough
+            # no 1/eps blow-up like a bare F.normalize(eps=...) would give.
+            norm = hidden_states.norm(dim=-1, keepdim=True)
+            scale = (self.output_scale / (norm + self.eps)).clamp(max=1.0)
+            hidden_states = hidden_states * scale
         return hidden_states
 
 @dataclass
